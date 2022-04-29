@@ -15,7 +15,8 @@ $ ->
     ctx.stroke();
     return
 
-  $('#myCanvas').click (e) ->
+  triangleFractal = (iteration) ->
+    console.log "IN triangleFractal"
     radius = $('#radius').val()
     attempt = localStorage.getItem("attempt")
     attempt++
@@ -36,8 +37,7 @@ $ ->
       i = 1
       point_x = posX
       point_y = posY
-      iteration = $('#iteration').val()
-      window['a']
+
       while (i <= iteration)
         randomInt = Math.floor(Math.random() * 3) + 1
         point_x = point_x + (localStorage.getItem("posX" + randomInt) - point_x) / 2
@@ -50,4 +50,65 @@ $ ->
       attempt = 0
       ctx.clearRect(0,0,canvas.width, canvas.height);
     localStorage.setItem("attempt", attempt);
+    return
+
+
+
+  paporotFractal = (iterationCount) ->
+    console.log "IN paporotFractal"
+    radius = $('#radius').val()
+    color =
+      r: 54
+      g: 163
+      b: 116
+      a: 255
+    # цвет папоротника
+
+
+    ctx.putImageData imgData, 0, 0
+    # количество итераций
+    p = undefined
+    oldx = undefined
+    r = 80
+    # коэффициент размера
+    # координаты точки
+    x = 1.0
+    y = 0.0
+    while iterationCount > 0
+      p = Math.random()
+      # генерируем случайное число от 0 до 1 (вероятность)
+      oldx = x
+      # запоминаем старое значение х
+      if p <= 0.85
+        x = 0.85 * x + 0.04 * y
+        y = -0.04 * oldx + 0.85 * y + 1.6
+      else
+        if p <= 0.92
+          x = 0.25 * x - (0.26 * y)
+          y = 0.23 * oldx + 0.25 * y + 1.6
+        else if p <= 0.99
+          x = -0.15 * x + 0.3 * y
+          y = 0.26 * oldx + 0.2 * y + 0.44
+        else
+          x = 0.0
+          y = 0.16 * y
+      # ставим пиксель, сдвигаем его в центр
+      drawCircle(400 + Math.round(r * x), 850 - Math.round(r * y), radius, color)
+      iterationCount--
+    return
+
+
+  $('#myCanvas').click (e) ->
+    iteration = $('#iteration').val()
+    console.log $('#switch_model').val()
+    if $('#switch_model').val() == 1
+      console.log "triangleFractal"
+      triangleFractal(iteration)
+    else
+      console.log "paporotFractal"
+      paporotFractal(iteration)
+
+
+
+
 

@@ -1,8 +1,13 @@
 %h1 My Application
-= label_tag 'Iteration'
-= text_field_tag 'iteration', 500000
-= label_tag 'Radius'
-= text_field_tag 'radius', 0.05
+%div.value_div
+  - options_for_select = [ {name: "Фрактал Трикутники", id: 1}, {name: "Фрактал Листок папороті", id: 2}]
+  = label_tag 'Вибір фрактала'
+  = select_tag 'switch_model', options_for_select(options_for_select.collect{ |u| [u[:name], u[:id]] })
+%div.value_div
+  = label_tag 'Ітерації'
+  = text_field_tag 'iteration', 100000
+  = label_tag 'Радіус крапки'
+  = text_field_tag 'radius', 0.05
 %canvas#myCanvas.canvas-style{:height => "800", :width => "1800"}
 
 
