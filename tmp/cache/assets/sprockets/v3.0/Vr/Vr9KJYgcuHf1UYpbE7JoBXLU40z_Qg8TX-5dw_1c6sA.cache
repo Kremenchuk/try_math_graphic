@@ -1,0 +1,64 @@
+I"Í(function() {
+  this.drawCircle = function(centerX, centerY, radius) {
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+    ctx.fillStyle = 'black';
+    ctx.fill();
+    ctx.stroke();
+  };
+
+  this.drawLine = function(x1, y1, x2, y2) {
+    ctx.strokeStyle = 'red';
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+  };
+
+  $(function() {
+    var canvas, ctx;
+    canvas = document.getElementById("myCanvas");
+    ctx = canvas.getContext("2d");
+    return $('#myCanvas').click(function(e) {
+      var attempt, dx, dy, i, iteration, point_x, point_y, posX, posY, randomInt, rect;
+      attempt = localStorage.getItem("attempt");
+      attempt++;
+      rect = e.target.getBoundingClientRect();
+      posX = e.clientX - rect.left;
+      posY = e.clientY - rect.top;
+      localStorage.setItem("posX" + attempt, posX);
+      localStorage.setItem("posY" + attempt, posY);
+      drawCircle(parseInt(posX), parseInt(posY), 2);
+      console.log("drawCircle, attempt: " + attempt);
+      if (attempt === 4) {
+        console.log("attempt == 4");
+        i = 1;
+        point_x = posX;
+        point_y = posY;
+        iteration = 3;
+        while (i <= iteration) {
+          randomInt = Math.floor(Math.random() * 2) + 1;
+          dx = (localStorage.getItem("posX" + randomInt) - point_x) / 2;
+          dy = (localStorage.getItem("posY" + randomInt) - point_y) / 2;
+          point_x = point_x + dx;
+          point_y = point_y + dy;
+          console.log("randomInt = " + randomInt);
+          console.log("dx = " + dx);
+          console.log("dy = " + dy);
+          console.log("point_x = " + point_x);
+          console.log("point_y = " + point_y);
+          i++;
+        }
+      }
+      if (attempt > 4) {
+        console.log("attempt > 3");
+        attempt = 0;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      return localStorage.setItem("attempt", attempt);
+    });
+  });
+
+}).call(this);
+:ET
