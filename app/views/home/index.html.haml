@@ -5,10 +5,10 @@
   = select_tag 'switch_model', options_for_select(options_for_select.collect{ |u| [u[:name], u[:id]] })
 %div.value_div
   = label_tag 'Ітерації'
-  = text_field_tag 'iteration', 100000
+  = text_field_tag 'iteration', 250000
   = label_tag 'Радіус крапки'
   = text_field_tag 'radius', 0.05
-%canvas#myCanvas.canvas-style{:height => "800", :width => "1800"}
+%canvas#myCanvas.canvas-style{:height => "800", :width => "1800", oncontextmenu: "return false;"}
 
 
 

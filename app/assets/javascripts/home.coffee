@@ -3,20 +3,21 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 $ ->
+
   canvas = document.getElementById("myCanvas");
   ctx = canvas.getContext("2d");
+  app_color = "rgba(0, 255, 0, 1)"
 
-  drawCircle = (centerX, centerY, radius, color = 'black') ->
+  drawCircle = (centerX, centerY, radius) ->
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
 
-    ctx.fillStyle = color;
+    ctx.fillStyle = app_color;
     ctx.fill();
     ctx.stroke();
     return
 
-  triangleFractal = (iteration) ->
-    console.log "IN triangleFractal"
+  triangleFractal = (e, iteration) ->
     radius = $('#radius').val()
     attempt = localStorage.getItem("attempt")
     attempt++
@@ -26,14 +27,9 @@ $ ->
     localStorage.setItem("posX" + attempt, posX);
     localStorage.setItem("posY" + attempt, posY);
 
-    if attempt == 4
-      color = '#00ff00'
-
-    drawCircle(parseInt(posX), parseInt(posY), 2, color)
-    console.log "drawCircle, attempt: " + attempt
+    drawCircle(parseInt(posX), parseInt(posY), 2)
 
     if attempt == 4
-      console.log "attempt == 4"
       i = 1
       point_x = posX
       point_y = posY
@@ -42,11 +38,10 @@ $ ->
         randomInt = Math.floor(Math.random() * 3) + 1
         point_x = point_x + (localStorage.getItem("posX" + randomInt) - point_x) / 2
         point_y = point_y + (localStorage.getItem("posY" + randomInt) - point_y) / 2
-        drawCircle(point_x, point_y, radius, color)
+        drawCircle(point_x, point_y, radius, app_color)
         i++
 
     if attempt > 4
-      console.log "attempt > 3"
       attempt = 0
       ctx.clearRect(0,0,canvas.width, canvas.height);
     localStorage.setItem("attempt", attempt);
@@ -54,31 +49,17 @@ $ ->
 
 
 
-  paporotFractal = (iterationCount) ->
-    console.log "IN paporotFractal"
+  paporotFractal = (e, iterationCount) ->
     radius = $('#radius').val()
-    color =
-      r: 54
-      g: 163
-      b: 116
-      a: 255
-    # цвет папоротника
 
-
-    ctx.putImageData imgData, 0, 0
-    # количество итераций
     p = undefined
     oldx = undefined
     r = 80
-    # коэффициент размера
-    # координаты точки
     x = 1.0
     y = 0.0
     while iterationCount > 0
       p = Math.random()
-      # генерируем случайное число от 0 до 1 (вероятность)
       oldx = x
-      # запоминаем старое значение х
       if p <= 0.85
         x = 0.85 * x + 0.04 * y
         y = -0.04 * oldx + 0.85 * y + 1.6
@@ -92,23 +73,39 @@ $ ->
         else
           x = 0.0
           y = 0.16 * y
-      # ставим пиксель, сдвигаем его в центр
-      drawCircle(400 + Math.round(r * x), 850 - Math.round(r * y), radius, color)
+      drawCircle(400 + Math.round(r * x), 850 - Math.round(r * y), radius)
       iterationCount--
     return
 
 
-  $('#myCanvas').click (e) ->
-    iteration = $('#iteration').val()
-    console.log $('#switch_model').val()
-    if $('#switch_model').val() == 1
-      console.log "triangleFractal"
-      triangleFractal(iteration)
-    else
-      console.log "paporotFractal"
-      paporotFractal(iteration)
+  #$('#myCanvas').click (e) ->
+   # iteration = $('#iteration').val()
+    #console.log $('#switch_model').val()
+    #if parseInt($('#switch_model').val()) == 1
+    #  console.log "triangleFractal"
+    #  triangleFractal(e, iteration)
+    #if parseInt($('#switch_model').val()) == 2
+    #  console.log "paporotFractal"
+    #  paporotFractal(e, iteration)
+    #return
 
-
-
+  $('#myCanvas').mouseup (event) ->
+    switch event.which
+      when 1
+        console.log 'left'
+        iteration = $('#iteration').val()
+        console.log $('#switch_model').val()
+        if parseInt($('#switch_model').val()) == 1
+          console.log "triangleFractal"
+          triangleFractal(event, iteration)
+        if parseInt($('#switch_model').val()) == 2
+          console.log "paporotFractal"
+          paporotFractal(event, iteration)
+      when 3
+        console.log 'center'
+        attempt = 0
+        ctx.clearRect(0,0,canvas.width, canvas.height);
+        localStorage.setItem("attempt", attempt);
+    return
 
 
